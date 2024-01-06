@@ -24,7 +24,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'branchId',
+        'shopId',
         'empId',
         'lastName',
         'firstName',
@@ -75,7 +75,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'empId' => $this->empId,
-            'branchId' => $this->branchId,
+            'shopId' => $this->shopId,
         ];
     }
     // public function branch_emp(): BelongsTo{

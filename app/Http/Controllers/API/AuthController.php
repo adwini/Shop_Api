@@ -24,7 +24,7 @@ class AuthController extends Controller
         $this->validate(
             $request,
             [
-                'branchId' => 'required|string|max:10',
+                'shopId' => 'required|string|max:10',
                 'empId' => 'required|string|max:10|min:4',
                 'password' => 'required|string',
             ],
@@ -40,11 +40,11 @@ class AuthController extends Controller
         );
         // $credentials = $request->only('email', 'password');
         $credentials = [
-            'branchId' => $request->branchId,
+            'shopId' => $request->shopId,
             'empId' => $request->empId,
             'password' => $request->password,
         ];
-        $token = Auth::attempt($credentials, $remember = true);
+        $token = Auth::attempt($credentials);
 
 
         if (!$token) {
@@ -82,7 +82,7 @@ class AuthController extends Controller
         // ) {
         $request->validate(
             [
-                'branchId' => 'required|string|max:10',
+                'shopId' => 'required|string|max:10',
                 'empId' => 'required|string|max:10',
                 'lastName' => 'required|string|max:30',
                 'firstName' => 'required|string|max:30',
@@ -129,7 +129,7 @@ class AuthController extends Controller
         );
 
         $user = User::create([
-            'branchId' => $request->branchId,
+            'shopId' => $request->shopId,
             'empId' => $request->empId,
             'lastName' => $request->lastName,
             'firstName' => $request->firstName,
