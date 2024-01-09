@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -28,24 +27,61 @@ class AuthController extends Controller
                 'empId' => 'required|string|max:10|min:4',
                 'password' => 'required|string',
             ],
-            // [
-            //     'branchId.required' => 'Branch ID is required.',
-            //     'branchId.max' => 'Branch ID must not exceed 10 characters.',
-            //     'empId.required' => 'Employee ID is required.',
-            //     'empId.max' => 'Employee ID must not exceed 10 characters.',
-            //     'empId.min' => 'Employee ID must be at least 4 characters.',
-            //     'password.required' => 'Password is required.',
-
-            // ]
         );
-        // $credentials = $request->only('email', 'password');
+
         $credentials = [
             'shopId' => $request->shopId,
             'empId' => $request->empId,
             'password' => $request->password,
         ];
-        $token = Auth::attempt($credentials);
 
+        $token = Auth::attempt($credentials);
+        $user = Auth::user();
+        $passAndEmp = User::where('empId', '=', $request->empId)->first();
+        $passAndShopID = User::where('shopId', '=', $request->shopId)->first();
+
+        if (
+            User::where('empId', '!=', $request->empId)->first() &&
+            User::where('shopId', '!=', $request->shopId)->first() && !$token
+        ) {
+            return response()->json([
+                'message' => 'Invalid Credentials',
+            ], 401);
+        } else if (
+            User::where('empId', '!=', $request->empId)->first() &&
+            User::where('shopId', '!=', $request->shopId)->first()
+        ) {
+            return response()->json([
+                'message' => 'Shop ID and Employee ID is incorrect!',
+            ], 401);
+        } else if (
+            User::where('empId', '!=', $request->empId)->first() &&
+            !Hash::check($request->password, $passAndShopID->password)
+        ) {
+            return response()->json([
+                'message' => 'Incorrect Employee ID and Password!',
+            ], 401);
+        } else if (
+            User::where('shopId', '!=', $request->shopId)->first() &&
+            !Hash::check($request->password, $passAndEmp->password)
+        ) {
+            return response()->json([
+                'message' => 'Incorrect Shop ID and Password!',
+            ], 401);
+        } else if (User::where('shopId', '!=', $request->shopId)->first()) {
+            return response()->json([
+                'message' => 'Invalid Shop ID!',
+            ], 401);
+        } else if (User::where('empId', '!=', $request->empId)->first()) {
+            return response()->json([
+                'message' => 'Invalid Employee ID!',
+            ], 401);
+        } else if (
+            !Hash::check($request->password, $passAndEmp->password) ||
+            !Hash::check($request->password, $passAndShopID->password)
+        ) {
+            return response()->json(['message' => 'Wrong password'], 401);
+        }
 
         if (!$token) {
             return response()->json([
@@ -53,7 +89,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+
         if ($user->status == 'inactive') {
             return response()->json([
                 'message' => 'You cannot login! You are inactive..',
