@@ -41,38 +41,38 @@ class AuthController extends Controller
         $passAndShopID = User::where('shopId', '=', $request->shopId)->first();
 
         if (
-            User::where('empId', '!=', $request->empId)->first() &&
-            User::where('shopId', '!=', $request->shopId)->first() && !$token
+            $request->empId != $user->empId &&
+            $request->shopId != $user->shopId && !$token
         ) {
             return response()->json([
                 'message' => 'Invalid Credentials',
             ], 401);
         } else if (
-            User::where('empId', '!=', $request->empId)->first() &&
-            User::where('shopId', '!=', $request->shopId)->first()
+            $request->empId != $user->empId &&
+            $request->shopId != $user->shopId
         ) {
             return response()->json([
                 'message' => 'Shop ID and Employee ID is incorrect!',
             ], 401);
         } else if (
-            User::where('empId', '!=', $request->empId)->first() &&
+            $request->empId != $user->empId &&
             !Hash::check($request->password, $passAndShopID->password)
         ) {
             return response()->json([
                 'message' => 'Incorrect Employee ID and Password!',
             ], 401);
         } else if (
-            User::where('shopId', '!=', $request->shopId)->first() &&
+            $request->shopId != $user->shopId &&
             !Hash::check($request->password, $passAndEmp->password)
         ) {
             return response()->json([
                 'message' => 'Incorrect Shop ID and Password!',
             ], 401);
-        } else if (User::where('shopId', '!=', $request->shopId)->first()) {
+        } else if ($request->shopId != $user->shopId) {
             return response()->json([
                 'message' => 'Invalid Shop ID!',
             ], 401);
-        } else if (User::where('empId', '!=', $request->empId)->first()) {
+        } else if ($request->empId != $user->empId) {
             return response()->json([
                 'message' => 'Invalid Employee ID!',
             ], 401);
@@ -83,12 +83,11 @@ class AuthController extends Controller
             return response()->json(['message' => 'Wrong password'], 401);
         }
 
-        if (!$token) {
-            return response()->json([
-                'message' => 'Invalid credentials!',
-            ], 401);
-        }
-
+        // if (!$token) {
+        //     return response()->json([
+        //         'message' => 'Invalid credentials!',
+        //     ], 401);
+        // }
 
         if ($user->status == 'inactive') {
             return response()->json([
