@@ -31,7 +31,8 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(BranchController::class)->group(function () {
     //Alias    function name
     Route::get('indexBranch', 'indexBranch');
-    Route::get('showBranch/{branchId}', 'showBranchId');
+    Route::get('showBranch/{shopId}', 'showBranchId');
+    Route::get('getBranch/{branchId}', 'getBranch');
     Route::post('createBranch', 'createBranch');
     Route::post('updateBranch/{id}', 'updateBranch');
     Route::delete('deleteBranch/{id}', 'deleteBranch');
