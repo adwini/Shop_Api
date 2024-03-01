@@ -20,8 +20,7 @@ class BranchController extends Controller
         if (empty($data)) {
             return response()->json([
                 'message' => 'No Branch is listed',
-                'data' => $data,
-            ]);
+            ], 204);
         }
         return response()->json($data, 200);
         // } else {
@@ -36,9 +35,9 @@ class BranchController extends Controller
         $branch_id = Branch::where('branchId', $branchId)->first();
 
         if ($branch_id == null) {
-            return response()->json(['message' => 'Nothing is found!']);
+            return response()->json(['message' => 'Not found!'], 404);
         }
-        return response()->json($branch_id);
+        return response()->json($branch_id, 200);
         // } else {
         //     return response()->json(['message' => 'You are not authorize!'], 403);
         // }
@@ -99,10 +98,7 @@ class BranchController extends Controller
             'remark' => $request->remark,
         ]);
 
-        return response()->json(
-            $branch,
-            200
-        );
+        return response()->json($branch, 200);
         // } else {
         //     return response()->json(['message' => 'You are not authorize!'], 403);
         // }
@@ -126,10 +122,11 @@ class BranchController extends Controller
         $branch = Branch::where('branchId', '=', $id)->first();
         if ($branch == null) {
             return response()->json(['message' => 'Cannot find shop'], 404);
-        } else {
-            $branch->update($request->all());
-            return response()->json(['message' => 'Update branch successfully!', 'data' => $branch], 200);
         }
+
+        $branch->update($request->all());
+        return response()->json(['message' => 'Update branch successfully!', 'data' => $branch], 200);
+
         // } else {
         //     return response()->json(['message' => 'You are not authorize!'], 403);
         // }
@@ -140,10 +137,10 @@ class BranchController extends Controller
         // if (Gate::allows('isSuperAdmin', $user)) {
         $delete_branch = Branch::find($id);
         if ($delete_branch == null) {
-            return response()->json(['message' => 'Something went wrong! Can\'t delete shop branch..']);
+            return response()->json(['message' => 'Something went wrong! Can\'t delete shop branch..'], 500);
         }
         $delete_branch->delete();
-        return response()->json(['message' => 'Branch successfully deleted!', 200]);
+        return response()->json(['message' => 'Branch successfully deleted!'], 200);
         // } else {
         //     return response()->json(['message' => 'You are not authorize!'], 403);
         // }
