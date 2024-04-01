@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BranchController;
 use App\Http\Controllers\API\ShopController;
+use App\Http\Controllers\API\SlipTransactionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(BranchController::class)->group(function () {
-    //Alias    function name
+                //Alias    function name
     Route::get('indexBranch', 'indexBranch');
     Route::get('showBranch/{shopId}', 'showBranchId');
     Route::get('getBranch/{branchId}', 'getBranch');
@@ -39,7 +40,7 @@ Route::controller(BranchController::class)->group(function () {
 });
 
 Route::controller(ShopController::class)->group(function () {
-    //Alias   function name
+              //Alias   function name
     Route::get('index', 'indexShop');
     Route::get('show/{shopId}', 'showShopId');
     Route::post('create', 'createShop');
@@ -47,5 +48,26 @@ Route::controller(ShopController::class)->group(function () {
     Route::delete('delete/{id}', 'deleteShop');
 });
 
-// Route::resource('branch', BranchController::class);
-// Route::resource('shop', ShopController::class);
+Route::controller(CustomersController::class)->group(function () {
+    Route::get('indexCustomers', 'indexCustomers');
+    Route::get('getCustomers/{shopId}', 'getCustomers');
+    Route::post('createCustomers', 'createCustomers');
+    Route::post('updateCustomer/{id}', 'updateCustomer');
+    Route::delete('deleteCustomers/{id}', 'deleteCustomers');
+});
+
+Route::controller(SlipTransaction::class)->group(function () {
+    Route::get('indexSlipTransactions', 'indexSlipTransactions');
+    Route::get('getSlipTransactions/{shopId}', 'getSlipTransactions');
+    Route::post('createSlipTransactions', 'createSlipTransactions');
+    Route::post('updateSlipTransaction/{id}', 'updateSlipTransaction');
+    Route::delete('deleteSlipTransactions/{id}', 'deleteSlipTransactions');
+});
+
+Route::controller(CustomersController::class)->group(function () {
+    Route::get('indexSlipTransactions', 'indexSlipTransactions');
+    Route::get('getSlipTransactions/{shopId}', 'getSlipTransactions');
+    Route::post('createSlipTransactions', 'createSlipTransactions');
+    Route::post('updateSlipTransaction/{id}', 'updateSlipTransaction');
+    Route::delete('deleteSlipTransactions/{id}', 'deleteSlipTransactions');
+});
